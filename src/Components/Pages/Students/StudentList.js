@@ -1,11 +1,14 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Table from '../../Common/Table/Table'
 import { getAllRecords } from '../../Common/Services/CommonServices';
-import { Edit } from '../../Common/CommonComponents/Icons';
+import { Edit, Delete } from '../../Common/CommonComponents/Icons';
+import Modal from '../../Common/CommonComponents/Modal';
+import StudentDetail from './StudentDetail';
 
 
 const StudentList = () => {
   const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     GetRecords();
   }, []);
@@ -19,6 +22,21 @@ const StudentList = () => {
       console.error('Error fetching student records:', error);
     }
   }
+
+  const onAddStudent = () => {
+    console.log("Add Student Clicked");
+    setOpen(true);
+    // Implement the logic to add a new student
+  }
+  const onClose = () => {
+    setOpen(false);
+  }
+
+  const onEditHandler = () => {
+    console.log("Edit Clicked");
+    setOpen(true);
+  }
+
 const columns = [
     {
       Header: 'S.No',
@@ -42,8 +60,8 @@ const columns = [
       accessor: 'actions',
       Cell: ({ row }) => (
         <div>
-          <Edit />
-          <button className="px-2 py-1 bg-red-500 text-white rounded">Delete</button>
+          <Edit onClick={onEditHandler} />
+          <Delete />
         </div>
       ),
     }
@@ -54,7 +72,12 @@ const columns = [
     <div>
       <h1>Student List Page</h1>
       <div className='mt-4'>
-        <Table columns={columns} data={data} />
+        <Table columns={columns} data={data} onClick={onAddStudent} />
+      </div>
+      <div>
+        <Modal isOpen={open} title='Student Details' onClose={onClose} width='max-w-4xl' >
+          <StudentDetail />
+        </Modal>
       </div>
     </div>
   )
